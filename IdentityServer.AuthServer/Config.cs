@@ -63,6 +63,6 @@ namespace IdentityServer.AuthServer
                     AllowedScopes = { "api1.read", "api2.write", "api2.update" }
                 }
             };
-        }
+        } 
     }
 }

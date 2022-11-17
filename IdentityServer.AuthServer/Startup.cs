@@ -23,6 +23,13 @@ namespace IdentityServer.AuthServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //identityServer.
+            services.AddIdentityServer()
+                .AddInMemoryApiResources(Config.GetApiResources())
+                .AddInMemoryApiScopes(Config.GetApiScopes())
+                .AddInMemoryClients(Config.GetClients())
+                .AddDeveloperSigningCredential(); //development esnasýnda public key ve private key oluþturur. Production'a çýktýðýmýz zaman farklý bir ortamdan çekmemiz için SigninCredential kullanýlýr.
+
             services.AddControllersWithViews();
         }
 
@@ -43,6 +50,8 @@ namespace IdentityServer.AuthServer
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseIdentityServer();//UseAuthorization'ýn üzerinde olmalý.
 
             app.UseAuthorization();
 
