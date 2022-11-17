@@ -39,5 +39,30 @@ namespace IdentityServer.AuthServer
                 new ApiScope("api2.update","API2 için güncelleme izni"),
             };
         }
+        /// <summary>
+        /// IdentityServer'ın client'ları bildiği metottur. Burada uygulamanın sahip olduğu api'leri hangi client'ların kullanacağı tanıtılır.
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<Client> GetClients()
+        {
+            return new List<Client>(){
+                new Client()
+                {
+                    ClientId = "Client1", //kullanıcının username'i gibi düşünebiliriz.
+                    ClientName = "Client 1 app uygulaması",//bir kullanıcı api ile ilgili data almak istediğinde işimize yarar.
+                    ClientSecrets = new[]{new Secret("secret".Sha256())}, //sha ile hash'lememiz gerekir, normal tutulmaz. hash'lersek geriye dönemeyiz. hashlandikten sonra hashlenmiş olan değerle karşılaştırırz. 
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    AllowedScopes = { "api1.read", "api2.write", "api2.update" } //hangi api'de hangi izinlerin kullanılacağını vermiş oluyoruz.
+                },
+                new Client()
+                {
+                    ClientId = "Client2",
+                    ClientName = "Client 2 app uygulaması",
+                    ClientSecrets = new[]{new Secret("secret".Sha256())},
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    AllowedScopes = { "api1.read", "api2.write", "api2.update" }
+                }
+            };
+        }
     }
 }
