@@ -11,7 +11,7 @@ namespace IdentityServer.API1.Controllers
     public class ProductController : ControllerBase
     {
         //-->   api/product/getproducts
-        [Authorize]
+        [Authorize(Policy = "ReadProduct")] //claim bazlı yetkilendirme yaparız. startup tarafında bunu geçeriz.
         [HttpGet]
         public IActionResult GetProducts()
         {
@@ -23,6 +23,17 @@ namespace IdentityServer.API1.Controllers
                 new Product { Id = 5, Name = "kalem 5", Price = 500, Stock = 500 } 
             };
             return Ok(productList);
+        }
+
+        [Authorize(Policy = "UpdateOrCreate")]
+        public IActionResult UpdateProduct(int id)
+        {
+            return Ok($"id'si {id} olan ürün başarıyla güncellenmiştir.");
+        }
+        [Authorize(Policy = "UpdateOrCreate")]
+        public IActionResult CreateProduct(Product product)
+        {
+            return Ok(product);
         }
     }
 }

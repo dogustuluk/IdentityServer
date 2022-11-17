@@ -34,6 +34,22 @@ namespace IdentityServer.API1
                 opts.Audience = "resource_api1"; //bu property; benden data alacak kiþide mutlaka þu property'nin set olmasý gerektiði bilgisini verir. Gelen isteði kabul etmek için bu alanýn olmasý þart.
             });
 
+            //claim based
+            //"scope" alaný token içerisindeki scope alanýnda olmasý gerekenlerdir.
+            services.AddAuthorization(opts =>
+            {
+                opts.AddPolicy("ReadProduct", policy =>
+                {
+                    policy.RequireClaim("scope", "api1.read");
+                });
+
+                opts.AddPolicy("UpdateOrCreate", policy =>
+                {
+                    policy.RequireClaim("scope", new[] { "api1.update", "api1.create" });
+                });
+            });
+
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
