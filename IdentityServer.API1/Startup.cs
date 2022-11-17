@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -26,6 +27,12 @@ namespace IdentityServer.API1
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //þema authentication instance'ýný tutmaktadýr. iki tip üyelik sistemimiz varsa, bunlarý birbirinden ayýrmak için kullanýyoruz.
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, opts =>
+            {
+                opts.Authority = "https://localhost:5001"; //token'ýn sahibi, yayýnlayanýn sahibini yazarýz. Artýk api1'e bir token geldiði zaman buradaki yetkiliden public key alýr. Ardýndan private key'i buradan aldýðý public key ile doðrulayacak.
+                opts.Audience = "resource_api1"; //bu property; benden data alacak kiþide mutlaka þu property'nin set olmasý gerektiði bilgisini verir. Gelen isteði kabul etmek için bu alanýn olmasý þart.
+            });
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -47,6 +54,8 @@ namespace IdentityServer.API1
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

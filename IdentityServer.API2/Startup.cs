@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -27,6 +28,12 @@ namespace IdentityServer.API2
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, opts =>
+            {
+                opts.Authority = "https://localhost:5001"; //token'ýn sahibi, yayýnlayanýn sahibini yazarýz. Artýk api1'e bir token geldiði zaman buradaki yetkiliden public key alýr. Ardýndan private key'i buradan aldýðý public key ile doðrulayacak.
+                opts.Audience = "resource_api2"; //bu property; benden data alacak kiþide mutlaka þu property'nin set olmasý gerektiði bilgisini verir. Gelen isteði kabul etmek için bu alanýn olmasý þart.
+            });
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -47,6 +54,8 @@ namespace IdentityServer.API2
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

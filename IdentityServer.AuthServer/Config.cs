@@ -52,7 +52,7 @@ namespace IdentityServer.AuthServer
                     ClientName = "Client 1 app uygulaması",//bir kullanıcı api ile ilgili data almak istediğinde işimize yarar.
                     ClientSecrets = new[]{new Secret("secret".Sha256())}, //sha ile hash'lememiz gerekir, normal tutulmaz. hash'lersek geriye dönemeyiz. hashlandikten sonra hashlenmiş olan değerle karşılaştırırz. 
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
-                    AllowedScopes = { "api1.read", "api2.write", "api2.update" } //hangi api'de hangi izinlerin kullanılacağını vermiş oluyoruz.
+                    AllowedScopes = { "api1.read" } //hangi api'de hangi izinlerin kullanılacağını vermiş oluyoruz.
                 },
                 new Client()
                 {
