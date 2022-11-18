@@ -28,6 +28,8 @@ namespace IdentityServer.AuthServer
                 .AddInMemoryApiResources(Config.GetApiResources())
                 .AddInMemoryApiScopes(Config.GetApiScopes())
                 .AddInMemoryClients(Config.GetClients())
+                .AddInMemoryIdentityResources(Config.GetIdentityResources())
+                .AddTestUsers(Config.GetUsers().ToList())
                 .AddDeveloperSigningCredential(); //development esnasýnda public key ve private key oluþturur. Production'a çýktýðýmýz zaman farklý bir ortamdan çekmemiz için SigninCredential kullanýlýr.
 
             services.AddControllersWithViews();

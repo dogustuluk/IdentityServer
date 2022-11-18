@@ -1,5 +1,7 @@
 ﻿using IdentityServer4.Models;
+using IdentityServer4.Test;
 using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace IdentityServer.AuthServer
 {
@@ -43,6 +45,55 @@ namespace IdentityServer.AuthServer
             };
         }
         /// <summary>
+        /// Kullanıcılardan hangi bilgilerin alınacağını ve token içerisinde hangi dataların tutulacağını içeren metottur.
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<IdentityResource> GetIdentityResources()
+        {
+            //ön tanımlı olarak gelen resource'ları tanımlayalım.
+            //bunlar kendi içlerinde claimler tutar. claimler: Kullanıcı hakkında tutmuş olduğumuz ekstra datalardır, token'ın payload'ında kullanıcı hakkında ekstra bilgiler tutabiliriz. OpenId, subId'ye karşılık gelir. Profile içerisinde de bir sürü claimler vardır. bunların içerisinde tutulan claimleri görmek için ezber yapmayız, dokümandan bakarız.
+            //bunlardan ilki ve üyelik sisteminin olmazsa olmazıdır. neden gerekli; bir token döndüğü zaman içerisinde bu token'ın mutlaka bir kullanıcının id'si olmak zorundadır. Bu id subjectId olarak geçer. kullanıcı işin içine girince resource'lardan birisinin OpenId olması gerekir çünkü bu token'ın kim için üretildiğini bilelim. Yani hangi kullanıcı için olduğunu bilmek için.
+            return new List<IdentityResource>()
+            {
+            new IdentityResources.OpenId(), //subId
+            //profil bilgileri isteğe bağlıdır. burada kullanıcının ekstra bilgileri yer alır; yaşadığı şehir, il ilçe, soyadı, ilk ismi, göbek adı gibi.
+            new IdentityResources.Profile(),
+            };
+        }
+        /// <summary>
+        /// Test amaçlı oluşturulan kullanıcıları içeren metottur.
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<TestUser> GetUsers()
+        {
+            return new List<TestUser>()
+        {
+            new TestUser()
+            {
+                SubjectId = "1",
+                Username = "DogusTuluk",
+                Password = "password",
+                Claims = new List<Claim>()
+                {
+                    new Claim("given_name","Doğuş"),
+                    new Claim("family_name","Tuluk")
+                }
+            },
+            new TestUser()
+            {
+                SubjectId = "2",
+                Username = "Dogus2Tuluk2",
+                Password = "password",
+                Claims = new List<Claim>()
+                {
+                    new Claim("given_name","Doğuş2"),
+                    new Claim("family_name","Tuluk2")
+                }
+            }
+        };
+        }
+
+        /// <summary>
         /// IdentityServer'ın client'ları bildiği metottur. Burada uygulamanın sahip olduğu api'leri hangi client'ların kullanacağı tanıtılır.
         /// </summary>
         /// <returns></returns>
@@ -66,6 +117,6 @@ namespace IdentityServer.AuthServer
                     AllowedScopes = { "api1.read","api1.update" ,"api2.write", "api2.update" }
                 }
             };
-        } 
+        }
     }
 }
