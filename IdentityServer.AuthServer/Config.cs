@@ -13,13 +13,16 @@ namespace IdentityServer.AuthServer
         {
             return new List<ApiResource>()
             {
-                new ApiResource("resource_api1")
+                new ApiResource("resource_api1") //basic auth için kullanıcı adıdır.
                 {
-                    Scopes={ "api1.read", "api1.write", "api1.update" }
+                    Scopes={ "api1.read", "api1.write", "api1.update" },
+
+                    ApiSecrets = new[]{new Secret("secretapi1".Sha256()) }//basic auth için şifre oluşturmuş olduk.
                 },
                 new ApiResource("resource_api2")
                 {
-                    Scopes ={ "api2.read", "api2.write", "api2.update" }
+                    Scopes ={ "api2.read", "api2.write", "api2.update" },
+                     ApiSecrets = new[]{new Secret("secretapi2".Sha256()) }
                 }
             };
         }

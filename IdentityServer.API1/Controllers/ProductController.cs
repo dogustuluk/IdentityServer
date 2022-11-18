@@ -26,11 +26,13 @@ namespace IdentityServer.API1.Controllers
         }
 
         [Authorize(Policy = "UpdateOrCreate")]
+        [HttpPost]
         public IActionResult UpdateProduct(int id)
         {
             return Ok($"id'si {id} olan ürün başarıyla güncellenmiştir.");
         }
         [Authorize(Policy = "UpdateOrCreate")]
+        [HttpPost]
         public IActionResult CreateProduct(Product product)
         {
             return Ok(product);
