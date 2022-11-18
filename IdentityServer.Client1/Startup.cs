@@ -23,6 +23,24 @@ namespace IdentityServer.Client1
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            /*desc
+             * AddAuthentication bloðu ile kurmuþ olduðumuz AuthServer ile haberleþebilir bir hale geldik. authorization code dönmesi ve ardýndan token endpoint'e istek yapmasý iþlemlerini framework gerçekleþtirecek. burada sadece client ile ilgili olan ayarlamalardýr. 
+             * henüz buradaki ayarlarý authorization server bilmiyor. onu bilgilendirmemiz için kodlar yazmamýz gerekiyor.
+             */
+            services.AddAuthentication(opts =>
+            {
+                opts.DefaultScheme = "Cookies";
+                opts.DefaultChallengeScheme = "oidc"; //cookie'nin kimle haberleþeceðini veriyoruz. openIdConnect'ten gelen cookie ile haberleþecek yani identityServer'dan gelenle.
+                //schema kullanmamýzýn nedeni --> uygulamamýzda birden fazla cookie mekanizmasýl olabilir. örneðin bir web sitemiz var, bir tanesi normal kullanýcýlar bir diðeri de bayii kullanýcýlarý olabilir. bunlarý birbirinden ayýrmak için kullanýrýz.
+            }).AddCookie("Cookies").AddOpenIdConnect("oidc", opts =>
+            {
+                opts.SignInScheme = "Cookies";
+                opts.Authority = "https://localhost:5001"; //token'ý daðýtan yeri yazarýz. yani yetkili yer.
+                opts.ClientId = "Client1-Mvc";
+                opts.ClientSecret = "secret";
+                opts.ResponseType = "code id_token";
+            });
+
             services.AddControllersWithViews();
         }
 
