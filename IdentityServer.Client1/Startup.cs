@@ -52,6 +52,7 @@ namespace IdentityServer.Client1
                  * Ýzin istemek için önce AuthServer'ýn Config dosyasýnda AllowedScopes'ta tanýmlýyoruz, daha sonra ilgili Client'ýn startup dosyasýnda da AddOpenIdConnect'te hangi izni tanýmladýysak buraya da geçmeliyiz aþaðýdaki gibi.
                  */
                 opts.Scope.Add("api1.read");
+                opts.Scope.Add("offline_access");//refresh token için gereklidir
             });
 
             services.AddControllersWithViews();

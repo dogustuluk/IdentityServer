@@ -1,6 +1,7 @@
 ﻿using IdentityServer4;
 using IdentityServer4.Models;
 using IdentityServer4.Test;
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 
@@ -134,7 +135,26 @@ namespace IdentityServer.AuthServer
                     /*AllowedScopes
                      * Burada üyelikle ilgili bir client olduğundan dolayı identity server'ın sabitlerinden kullanıcıyı tanımlayam id(OpenId) ile opsiyonel olarak istediğimizi Profile bilgisini alıyoruz. Eğer istersek hangi izinlere sahip olduğunu da verebiliriz; örn. api1.read.
                      */
-                    AllowedScopes = { IdentityServerConstants.StandardScopes.OpenId, IdentityServerConstants.StandardScopes.Profile, "api1.read" }
+                    AllowedScopes = { IdentityServerConstants.StandardScopes.OpenId, IdentityServerConstants.StandardScopes.Profile, "api1.read", IdentityServerConstants.StandardScopes.OfflineAccess },
+                    /*access token lifetime
+                     * access token'ın default olarak tanımlanan süresi 1 saat(3600 saniye).
+                     * refresh token olarak iki tip ömür verme durumuna sahiptir; absolute ve sliding.
+                     * absolute verirsek kesin bir tarih içerir. default olarak 30 gün olarak ayarlanır.
+                     * sliding ise default olarak 15 gün olarak ayarlanır. Eğer bu 15 günün herhangi bir noktasında tekrardan istenirse, istenilen tarihin üzerine tekrardan 15 gün eklenir(ya da default tarihi kullanmazsak ayarladığımız süre boyunca ekleme yapılır.)
+                     */
+                    AccessTokenLifetime = DateTime.Now.AddHours(2).Second,
+                    /*refresh token
+                     * true'ya set edersek refresh token kullanılacağını belirtiriz.
+                     * refresh token alabilmek için allowedScopes'a mutlaka --> IdentityServerConstants.StandardScopes.OfflineAccess <-- eklememiz gerekir.
+                     * bunu ekledikten sonra ilgili client'ın startup'ına gidip --> opts.Scope.Add("offline_access") <-- yazmamız gereklidir.
+                     */
+                    AllowOfflineAccess = true,
+                    /*RefreshTokenUsage
+                     * refresh token'ın kaç kez kullanılacağını belirtiriz.
+                     */
+                    RefreshTokenUsage = TokenUsage.ReUse,
+                    AbsoluteRefreshTokenLifetime = DateTime.Now.AddDays(60).Second
+
                 }
             };
         }
