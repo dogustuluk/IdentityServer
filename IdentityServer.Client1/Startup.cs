@@ -62,6 +62,8 @@ namespace IdentityServer.Client1
 
             app.UseRouting();
 
+            app.UseAuthentication();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

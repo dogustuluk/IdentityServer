@@ -120,16 +120,17 @@ namespace IdentityServer.AuthServer
                 new Client()
                 {
                     ClientId = "Client1-Mvc",
+                    RequirePkce = false, //server-side olduğu için false
                     ClientName = "Client 1 app mvc uygulaması",
                     ClientSecrets = new[]{new Secret("secret".Sha256())},
                     AllowedGrantTypes = GrantTypes.Hybrid, //response type olarak sadece code ise GrantTypes.Code yaparız.
                     /*RedirectUris
-                     * Burada client1'in hangi portta çalıştığını bulup dönüş uri'sine veriyoruz ve ardından "/sign-oidc" yazarız. Eğer biz Client1 tarafında startup'a OpenIdConnect servisini eklediğimiz zaman bizim Client1 adlı sitemizde/uygulamamızda aşağıda tanımladığımız şekilde bir url oluşur. Bu url token alma işlemini gerçekleştiren url'dir. Olay şöyle gerçekleşir; eğer biz Client1 olarak Autorize endpoint'ine bir istek yapıp bize geriye code(authorization code) ve id_token geliyor. İşte buradan gelen değerlerin geri dönüş url'i buradaki adres olacaktır. buradaki url de token alma işlemini gerçekleştirmiş olacak ve arkasından bu url'den de benim herhangi bir sayfama yönlendirme işlemi gerçekleşecek.
+                     * Burada client1'in hangi portta çalıştığını bulup dönüş uri'sine veriyoruz ve ardından "/signin-oidc" yazarız. Eğer biz Client1 tarafında startup'a OpenIdConnect servisini eklediğimiz zaman bizim Client1 adlı sitemizde/uygulamamızda aşağıda tanımladığımız şekilde bir url oluşur. Bu url token alma işlemini gerçekleştiren url'dir. Olay şöyle gerçekleşir; eğer biz Client1 olarak Autorize endpoint'ine bir istek yapıp bize geriye code(authorization code) ve id_token geliyor. İşte buradan gelen değerlerin geri dönüş url'i buradaki adres olacaktır. buradaki url de token alma işlemini gerçekleştirmiş olacak ve arkasından bu url'den de benim herhangi bir sayfama yönlendirme işlemi gerçekleşecek.
                      * Kısaca authorize endpoint'ine bir istek yaptığımız zaman nereye döneceğimizi belirten bir url'dir.
-                     * Client1 uygulamamda dependency paketi olarak Microsoft.AspNetCore.Authentication.OpenIdConnect paketini yüklediğim için otomatik olarak burada vermiş olduğum "sign-oidc" isminde bir url oluşuyor. Authorization server bu url'e dönüş yapıyor ve bu url üzerinden de bizim sitemize dönüş gerçekleşiyor. Burada token alma işlemi ve cookie işlemi gerçekleşiyor. Bunların hepsi otomatik olarak gerçekleşir. Eğer burada startup dosyasında OpenIdConnect paketini kullanmasaydık buradaki url oluşmayacaktı.
+                     * Client1 uygulamamda dependency paketi olarak Microsoft.AspNetCore.Authentication.OpenIdConnect paketini yüklediğim için otomatik olarak burada vermiş olduğum "signin-oidc" isminde bir url oluşuyor. Authorization server bu url'e dönüş yapıyor ve bu url üzerinden de bizim sitemize dönüş gerçekleşiyor. Burada token alma işlemi ve cookie işlemi gerçekleşiyor. Bunların hepsi otomatik olarak gerçekleşir. Eğer burada startup dosyasında OpenIdConnect paketini kullanmasaydık buradaki url oluşmayacaktı.
                      * Burada AuthServer'daki Config dosyamıza; herhangi bir kullanıcı bilgilerini doğru girdikten sonra döneceği adresi veriyoruz.
                      */
-                    RedirectUris = new List<string>{ "https://localhost:5006/sign-oidc" },
+                    RedirectUris = new List<string>{ "https://localhost:5006/signin-oidc" },
                     /*AllowedScopes
                      * Burada üyelikle ilgili bir client olduğundan dolayı identity server'ın sabitlerinden kullanıcıyı tanımlayam id(OpenId) ile opsiyonel olarak istediğimizi Profile bilgisini alıyoruz. Eğer istersek hangi izinlere sahip olduğunu da verebiliriz; örn. api1.read.
                      */
