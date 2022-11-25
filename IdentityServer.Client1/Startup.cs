@@ -46,6 +46,12 @@ namespace IdentityServer.Client1
                  */
                 opts.GetClaimsFromUserInfoEndpoint = true;
                 opts.SaveTokens = true;
+                /*Scope
+                 * Bu isteði AuthServer'a yaptýðýmýz zaman, AuthServer içerisinde bulunan Config dosyasýndan AllowedScopes içerisinde ilgili izin olup olmadýðýný kontrol edecek ve buna göre bir cevap dönecektir. 
+                 * Eðer olmayan bir izni yazarsak hata verecektir.
+                 * Ýzin istemek için önce AuthServer'ýn Config dosyasýnda AllowedScopes'ta tanýmlýyoruz, daha sonra ilgili Client'ýn startup dosyasýnda da AddOpenIdConnect'te hangi izni tanýmladýysak buraya da geçmeliyiz aþaðýdaki gibi.
+                 */
+                opts.Scope.Add("api1.read");
             });
 
             services.AddControllersWithViews();

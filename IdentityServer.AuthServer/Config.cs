@@ -134,7 +134,7 @@ namespace IdentityServer.AuthServer
                     /*AllowedScopes
                      * Burada üyelikle ilgili bir client olduğundan dolayı identity server'ın sabitlerinden kullanıcıyı tanımlayam id(OpenId) ile opsiyonel olarak istediğimizi Profile bilgisini alıyoruz. Eğer istersek hangi izinlere sahip olduğunu da verebiliriz; örn. api1.read.
                      */
-                    AllowedScopes = { IdentityServerConstants.StandardScopes.OpenId, IdentityServerConstants.StandardScopes.Profile, /*"api1.read"*/ }
+                    AllowedScopes = { IdentityServerConstants.StandardScopes.OpenId, IdentityServerConstants.StandardScopes.Profile, "api1.read" }
                 }
             };
         }
