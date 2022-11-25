@@ -132,6 +132,11 @@ namespace IdentityServer.AuthServer
                      * Burada AuthServer'daki Config dosyamıza; herhangi bir kullanıcı bilgilerini doğru girdikten sonra döneceği adresi veriyoruz.
                      */
                     RedirectUris = new List<string>{ "https://localhost:5006/signin-oidc" },
+                    /*signout
+                     * signout işleminde iki durum olacak. ilki kendi uygulamamızdan yani buraya göre Client1'den hem de identity server'dan çıkış yapmalıyız.
+                     * identity server'dan çıkış yapmak için bir yönlendirme yaptığımızda, identity server'dan tekrardan buraya yönlendirme yapmamız için redirect uri'ye ihtiyacımız vardır. Yani identity serverda logout olduğumuzda hangi üri'ye döneceğimizi belirtmemiz gerekmektedir. Bu uri'de ezberden değil, otomatik olarak OpenIdConnect protokolünden verilir. 
+                     */
+                    PostLogoutRedirectUris = new List<string>{ "https://localhost:5006/signout-callback-oidc" },
                     /*AllowedScopes
                      * Burada üyelikle ilgili bir client olduğundan dolayı identity server'ın sabitlerinden kullanıcıyı tanımlayam id(OpenId) ile opsiyonel olarak istediğimizi Profile bilgisini alıyoruz. Eğer istersek hangi izinlere sahip olduğunu da verebiliriz; örn. api1.read.
                      */
@@ -142,7 +147,7 @@ namespace IdentityServer.AuthServer
                      * absolute verirsek kesin bir tarih içerir. default olarak 30 gün olarak ayarlanır.
                      * sliding ise default olarak 15 gün olarak ayarlanır. Eğer bu 15 günün herhangi bir noktasında tekrardan istenirse, istenilen tarihin üzerine tekrardan 15 gün eklenir(ya da default tarihi kullanmazsak ayarladığımız süre boyunca ekleme yapılır.)
                      */
-                    AccessTokenLifetime = DateTime.Now.AddHours(2).Second,
+                    AccessTokenLifetime = (int)(DateTime.Now.AddHours(2) - DateTime.Now).TotalSeconds,
                     /*refresh token
                      * true'ya set edersek refresh token kullanılacağını belirtiriz.
                      * refresh token alabilmek için allowedScopes'a mutlaka --> IdentityServerConstants.StandardScopes.OfflineAccess <-- eklememiz gerekir.
@@ -153,7 +158,8 @@ namespace IdentityServer.AuthServer
                      * refresh token'ın kaç kez kullanılacağını belirtiriz.
                      */
                     RefreshTokenUsage = TokenUsage.ReUse,
-                    AbsoluteRefreshTokenLifetime = DateTime.Now.AddDays(60).Second
+                    RefreshTokenExpiration = TokenExpiration.Absolute,
+                    AbsoluteRefreshTokenLifetime = (int)(DateTime.Now.AddDays(60)-DateTime.Now).TotalSeconds
 
                 }
             };
