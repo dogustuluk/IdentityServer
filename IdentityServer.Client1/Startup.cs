@@ -26,6 +26,7 @@ namespace IdentityServer.Client1
             /*desc
              * AddAuthentication bloðu ile kurmuþ olduðumuz AuthServer ile haberleþebilir bir hale geldik. authorization code dönmesi ve ardýndan token endpoint'e istek yapmasý iþlemlerini framework gerçekleþtirecek. burada sadece client ile ilgili olan ayarlamalardýr. 
              * henüz buradaki ayarlarý authorization server bilmiyor. onu bilgilendirmemiz için kodlar yazmamýz gerekiyor.
+             * Bu ayarlarý yaparak merkezi bir üyelik sistemi oluþturmuþ olduk.
              */
             services.AddAuthentication(opts =>
             {
