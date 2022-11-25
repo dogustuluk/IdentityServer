@@ -45,6 +45,7 @@ namespace IdentityServer.Client1
                  * Default deðerlerde ek bilgilerin cookie'de tutulmasýný identity server saðlamaz çünkü cookie'yi gereksiz bir sürü bilgi ile doldurmak istemez. Ama isteðe baðlý olarak açabiliriz.
                  */
                 opts.GetClaimsFromUserInfoEndpoint = true;
+                opts.SaveTokens = true;
             });
 
             services.AddControllersWithViews();
