@@ -40,6 +40,11 @@ namespace IdentityServer.Client1
                 opts.ClientId = "Client1-Mvc";
                 opts.ClientSecret = "secret";
                 opts.ResponseType = "code id_token";
+                /*GetClaimsFromUserInfoEndpoint
+                 * Eðer kullanýcý hakkýnda ek bilgileri de almak istiyorsak true'ya set etmeliyiz.
+                 * Default deðerlerde ek bilgilerin cookie'de tutulmasýný identity server saðlamaz çünkü cookie'yi gereksiz bir sürü bilgi ile doldurmak istemez. Ama isteðe baðlý olarak açabiliriz.
+                 */
+                opts.GetClaimsFromUserInfoEndpoint = true;
             });
 
             services.AddControllersWithViews();
