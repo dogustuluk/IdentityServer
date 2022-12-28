@@ -1,4 +1,5 @@
 ﻿using IdentityServer.Client2.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -22,7 +23,11 @@ namespace IdentityServer.Client2.Controllers
         {
             return View();
         }
-
+        [Authorize]
+        public IActionResult User()
+        {
+            return View();
+        }
         public IActionResult Privacy()
         {
             return View();

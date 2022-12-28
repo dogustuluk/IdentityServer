@@ -174,9 +174,60 @@ namespace IdentityServer.AuthServer
                     /*Consent
                      * Eğer remember my decision özelliğini aktif yaparsak refresh token almamamız gerekmektedir. Eğer refresh token alan bir yapıya sahipsek yapılan seçimleri hatırla özelliğini aktif etsek dahi her giriş yaptığımızda tekrardan izinleri soracaktır. Bunun önüne geçmek için custom kodlama yapabiliriz ama doğru olanı refresh token alındığında eğer yeni bir izin eklenirse izinler sayfasına kullanıcıyı tekrardan yönlendirmek olacaktır.
                      */
-                    RequireConsent = true
+                    RequireConsent = false
+
+                },
+                new Client()
+                {
+                    ClientId = "Client2-Mvc",
+                    RequirePkce = false, //server-side olduğu için false
+                    ClientName = "Client 2 app mvc uygulaması",
+                    ClientSecrets = new[]{new Secret("secret".Sha256())},
+                    AllowedGrantTypes = GrantTypes.Hybrid, //response type olarak sadece code ise GrantTypes.Code yaparız.
+                    /*RedirectUris
+                     * Burada client1'in hangi portta çalıştığını bulup dönüş uri'sine veriyoruz ve ardından "/signin-oidc" yazarız. Eğer biz Client1 tarafında startup'a OpenIdConnect servisini eklediğimiz zaman bizim Client1 adlı sitemizde/uygulamamızda aşağıda tanımladığımız şekilde bir url oluşur. Bu url token alma işlemini gerçekleştiren url'dir. Olay şöyle gerçekleşir; eğer biz Client1 olarak Autorize endpoint'ine bir istek yapıp bize geriye code(authorization code) ve id_token geliyor. İşte buradan gelen değerlerin geri dönüş url'i buradaki adres olacaktır. buradaki url de token alma işlemini gerçekleştirmiş olacak ve arkasından bu url'den de benim herhangi bir sayfama yönlendirme işlemi gerçekleşecek.
+                     * Kısaca authorize endpoint'ine bir istek yaptığımız zaman nereye döneceğimizi belirten bir url'dir.
+                     * Client1 uygulamamda dependency paketi olarak Microsoft.AspNetCore.Authentication.OpenIdConnect paketini yüklediğim için otomatik olarak burada vermiş olduğum "signin-oidc" isminde bir url oluşuyor. Authorization server bu url'e dönüş yapıyor ve bu url üzerinden de bizim sitemize dönüş gerçekleşiyor. Burada token alma işlemi ve cookie işlemi gerçekleşiyor. Bunların hepsi otomatik olarak gerçekleşir. Eğer burada startup dosyasında OpenIdConnect paketini kullanmasaydık buradaki url oluşmayacaktı.
+                     * Burada AuthServer'daki Config dosyamıza; herhangi bir kullanıcı bilgilerini doğru girdikten sonra döneceği adresi veriyoruz.
+                     */
+                    RedirectUris = new List<string>{ "https://localhost:5011/signin-oidc" },
+                    /*signout
+                     * signout işleminde iki durum olacak. ilki kendi uygulamamızdan yani buraya göre Client1'den hem de identity server'dan çıkış yapmalıyız.
+                     * identity server'dan çıkış yapmak için bir yönlendirme yaptığımızda, identity server'dan tekrardan buraya yönlendirme yapmamız için redirect uri'ye ihtiyacımız vardır. Yani identity serverda logout olduğumuzda hangi üri'ye döneceğimizi belirtmemiz gerekmektedir. Bu uri'de ezberden değil, otomatik olarak OpenIdConnect protokolünden verilir. 
+                     */
+                    PostLogoutRedirectUris = new List<string>{ "https://localhost:5011/signout-callback-oidc" },
+                    /*AllowedScopes
+                     * Burada üyelikle ilgili bir client olduğundan dolayı identity server'ın sabitlerinden kullanıcıyı tanımlayam id(OpenId) ile opsiyonel olarak istediğimizi Profile bilgisini alıyoruz. Eğer istersek hangi izinlere sahip olduğunu da verebiliriz; örn. api1.read.
+                     * offlineAccess ile eğer refresh token aldıysak kullanıcı siteye dahi girmese ben arka tarafta kullanıcı adına bir access token elde edebilirim. Özetle bir refresh token dağıtmak istiyorsak OfflineAccess değerini true'ya set etmek gerekir.
+                     */
+                    AllowedScopes = { IdentityServerConstants.StandardScopes.OpenId, IdentityServerConstants.StandardScopes.Profile, "api1.read","api2.read", IdentityServerConstants.StandardScopes.OfflineAccess,"CountryAndCity","Roles" },
+                    /*access token lifetime
+                     * access token'ın default olarak tanımlanan süresi 1 saat(3600 saniye).
+                     * refresh token olarak iki tip ömür verme durumuna sahiptir; absolute ve sliding.
+                     * absolute verirsek kesin bir tarih içerir. default olarak 30 gün olarak ayarlanır.
+                     * sliding ise default olarak 15 gün olarak ayarlanır. Eğer bu 15 günün herhangi bir noktasında tekrardan istenirse, istenilen tarihin üzerine tekrardan 15 gün eklenir(ya da default tarihi kullanmazsak ayarladığımız süre boyunca ekleme yapılır.)
+                     */
+                    AccessTokenLifetime = (int)(DateTime.Now.AddHours(2) - DateTime.Now).TotalSeconds,
+                    /*refresh token
+                     * true'ya set edersek refresh token kullanılacağını belirtiriz.
+                     * refresh token alabilmek için allowedScopes'a mutlaka --> IdentityServerConstants.StandardScopes.OfflineAccess <-- eklememiz gerekir.
+                     * bunu ekledikten sonra ilgili client'ın startup'ına gidip --> opts.Scope.Add("offline_access") <-- yazmamız gereklidir.
+                     */
+                    AllowOfflineAccess = true,
+                    /*RefreshTokenUsage
+                     * refresh token'ın kaç kez kullanılacağını belirtiriz.
+                     */
+                    RefreshTokenUsage = TokenUsage.ReUse,
+                    RefreshTokenExpiration = TokenExpiration.Absolute,
+                    AbsoluteRefreshTokenLifetime = (int)(DateTime.Now.AddDays(60)-DateTime.Now).TotalSeconds,
+
+                    /*Consent
+                     * Eğer remember my decision özelliğini aktif yaparsak refresh token almamamız gerekmektedir. Eğer refresh token alan bir yapıya sahipsek yapılan seçimleri hatırla özelliğini aktif etsek dahi her giriş yaptığımızda tekrardan izinleri soracaktır. Bunun önüne geçmek için custom kodlama yapabiliriz ama doğru olanı refresh token alındığında eğer yeni bir izin eklenirse izinler sayfasına kullanıcıyı tekrardan yönlendirmek olacaktır.
+                     */
+                    RequireConsent = false //ihtiyaca göre false yapılabilir.
 
                 }
+
             };
         }
     }
