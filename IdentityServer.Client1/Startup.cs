@@ -34,7 +34,11 @@ namespace IdentityServer.Client1
                 opts.DefaultScheme = "Cookies";
                 opts.DefaultChallengeScheme = "oidc"; //cookie'nin kimle haberleþeceðini veriyoruz. openIdConnect'ten gelen cookie ile haberleþecek yani identityServer'dan gelenle.
                 //schema kullanmamýzýn nedeni --> uygulamamýzda birden fazla cookie mekanizmasýl olabilir. örneðin bir web sitemiz var, bir tanesi normal kullanýcýlar bir diðeri de bayii kullanýcýlarý olabilir. bunlarý birbirinden ayýrmak için kullanýrýz.
-            }).AddCookie("Cookies").AddOpenIdConnect("oidc", opts =>
+            }).AddCookie("Cookies", opts =>
+            {
+                opts.AccessDeniedPath = "/Home/AccessDenied";
+
+            }).AddOpenIdConnect("oidc", opts =>
             {
                 opts.SignInScheme = "Cookies";
                 opts.Authority = "https://localhost:5001"; //token'ý daðýtan yeri yazarýz. yani yetkili yer.
@@ -57,9 +61,19 @@ namespace IdentityServer.Client1
                 
                 //custom identity resource eklediysek
                 opts.Scope.Add("CountryAndCity");
+                opts.Scope.Add("Roles");
                 //buradak country isminde bir þeye eþitle deriz ilkinde. Ýkinci parametrede ise Config'te eklemiþ olduðumuz identity resource içerisindeki key adýný veriyoruz. Bu sayede mapleme iþlemini yapmýþ oluruz.
                 opts.ClaimActions.MapUniqueJsonKey("country", "country");
                 opts.ClaimActions.MapUniqueJsonKey("city", "city");
+                opts.ClaimActions.MapUniqueJsonKey("role", "role");
+                //ardýndan role üzerinden bir kimlik yetkilendirmesi yapýlacaðýnýn sisteme haber verilmesi lazým.
+                opts.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    RoleClaimType = "role"
+                    /*desc
+                     * Artýk herhangi bir yerde authorize attribute'e role verirsek  Client1 uygulamasý bunu ayrýþtýrmak için claim'lere gidip role'ü bulacak ve buradaki RoleClaimType ile rol bazlý bir yetkilendirme olduðunu öðrenecek. Arkasýndan yetkilendirmeyi doðrulayacak.
+                     */
+                };
             });
 
             services.AddControllersWithViews();
