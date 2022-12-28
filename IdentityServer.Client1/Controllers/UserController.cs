@@ -61,7 +61,7 @@ namespace IdentityServer.Client1.Controllers
             refreshTokenRequest.RefreshToken = refreshToken;
             refreshTokenRequest.Address = disco.TokenEndpoint; //endpoint'i belirtiriz.
             //burada username ve password gibi alanları belirtmedik çünkü bu istek cookie'ler üzerinden gideceği için identity server bu property'leri biliyor olacak.
-
+            
 
             /*RequestRefreshTokenAsync
              *Bir istek üzerinden refresh token almak için kullanırız.
@@ -109,6 +109,7 @@ namespace IdentityServer.Client1.Controllers
 
             /*desc
              * tekrardan giriş yapıyor olucaz.
+             * scheme isimleri startup.cs'te ne verdiysek aynı ismi gireriz.
              * schema -> Cookies, ClaimPrincipal --> authenticationResult nesnesi üzerinden otomatik olarak alırız(kimlik kartının içindeki ad,soyad,doğum tarihi gibi bilgilerin tutulduğu kart olarak düşünülebilir.), AuthenticationProperties olarak ise yukarıda tanımladığımız properties veriliyor.
              * signin olunduğunda ise cookie'nin içerisindeki authenticationResult'ın içerisinde gelen dataları güncellemiş olduk.
              */

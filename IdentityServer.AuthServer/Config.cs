@@ -139,6 +139,7 @@ namespace IdentityServer.AuthServer
                     PostLogoutRedirectUris = new List<string>{ "https://localhost:5006/signout-callback-oidc" },
                     /*AllowedScopes
                      * Burada üyelikle ilgili bir client olduğundan dolayı identity server'ın sabitlerinden kullanıcıyı tanımlayam id(OpenId) ile opsiyonel olarak istediğimizi Profile bilgisini alıyoruz. Eğer istersek hangi izinlere sahip olduğunu da verebiliriz; örn. api1.read.
+                     * offlineAccess ile eğer refresh token aldıysak kullanıcı siteye dahi girmese ben arka tarafta kullanıcı adına bir access token elde edebilirim. Özetle bir refresh token dağıtmak istiyorsak OfflineAccess değerini true'ya set etmek gerekir.
                      */
                     AllowedScopes = { IdentityServerConstants.StandardScopes.OpenId, IdentityServerConstants.StandardScopes.Profile, "api1.read", IdentityServerConstants.StandardScopes.OfflineAccess },
                     /*access token lifetime
@@ -159,7 +160,12 @@ namespace IdentityServer.AuthServer
                      */
                     RefreshTokenUsage = TokenUsage.ReUse,
                     RefreshTokenExpiration = TokenExpiration.Absolute,
-                    AbsoluteRefreshTokenLifetime = (int)(DateTime.Now.AddDays(60)-DateTime.Now).TotalSeconds
+                    AbsoluteRefreshTokenLifetime = (int)(DateTime.Now.AddDays(60)-DateTime.Now).TotalSeconds,
+
+                    /*Consent
+                     * Eğer remember my decision özelliğini aktif yaparsak refresh token almamamız gerekmektedir. Eğer refresh token alan bir yapıya sahipsek yapılan seçimleri hatırla özelliğini aktif etsek dahi her giriş yaptığımızda tekrardan izinleri soracaktır. Bunun önüne geçmek için custom kodlama yapabiliriz ama doğru olanı refresh token alındığında eğer yeni bir izin eklenirse izinler sayfasına kullanıcıyı tekrardan yönlendirmek olacaktır.
+                     */
+                    RequireConsent = true
 
                 }
             };
