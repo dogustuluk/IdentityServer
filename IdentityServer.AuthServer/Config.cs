@@ -3,6 +3,7 @@ using IdentityServer4.Models;
 using IdentityServer4.Test;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Security.Claims;
 
 namespace IdentityServer.AuthServer
@@ -60,6 +61,7 @@ namespace IdentityServer.AuthServer
             new IdentityResources.OpenId(), //subId
             //profil bilgileri isteğe bağlıdır. burada kullanıcının ekstra bilgileri yer alır; yaşadığı şehir, il ilçe, soyadı, ilk ismi, göbek adı gibi.
             new IdentityResources.Profile(),
+            new IdentityResource(){Name ="CountryAndCity", DisplayName="Country And City", Description="Kullanıcının ülke ve şehir bilgisi", UserClaims = new[]{"country","city"} }
             };
         }
         /// <summary>
@@ -78,7 +80,9 @@ namespace IdentityServer.AuthServer
                 Claims = new List<Claim>()
                 {
                     new Claim("given_name","Doğuş"),
-                    new Claim("family_name","Tuluk")
+                    new Claim("family_name","Tuluk"),
+                    new Claim("country","Turkey"),
+                    new Claim("city","Izmir")
                 }
             },
             new TestUser()
@@ -89,7 +93,9 @@ namespace IdentityServer.AuthServer
                 Claims = new List<Claim>()
                 {
                     new Claim("given_name","Doğuş2"),
-                    new Claim("family_name","Tuluk2")
+                    new Claim("family_name","Tuluk2"),
+                    new Claim("country","Turkey"),
+                    new Claim("city","Istanbul")
                 }
             }
         };
@@ -141,7 +147,7 @@ namespace IdentityServer.AuthServer
                      * Burada üyelikle ilgili bir client olduğundan dolayı identity server'ın sabitlerinden kullanıcıyı tanımlayam id(OpenId) ile opsiyonel olarak istediğimizi Profile bilgisini alıyoruz. Eğer istersek hangi izinlere sahip olduğunu da verebiliriz; örn. api1.read.
                      * offlineAccess ile eğer refresh token aldıysak kullanıcı siteye dahi girmese ben arka tarafta kullanıcı adına bir access token elde edebilirim. Özetle bir refresh token dağıtmak istiyorsak OfflineAccess değerini true'ya set etmek gerekir.
                      */
-                    AllowedScopes = { IdentityServerConstants.StandardScopes.OpenId, IdentityServerConstants.StandardScopes.Profile, "api1.read", IdentityServerConstants.StandardScopes.OfflineAccess },
+                    AllowedScopes = { IdentityServerConstants.StandardScopes.OpenId, IdentityServerConstants.StandardScopes.Profile, "api1.read", IdentityServerConstants.StandardScopes.OfflineAccess,"CountryAndCity" },
                     /*access token lifetime
                      * access token'ın default olarak tanımlanan süresi 1 saat(3600 saniye).
                      * refresh token olarak iki tip ömür verme durumuna sahiptir; absolute ve sliding.

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -53,6 +54,12 @@ namespace IdentityServer.Client1
                  */
                 opts.Scope.Add("api1.read");
                 opts.Scope.Add("offline_access");//refresh token için gereklidir
+                
+                //custom identity resource eklediysek
+                opts.Scope.Add("CountryAndCity");
+                //buradak country isminde bir þeye eþitle deriz ilkinde. Ýkinci parametrede ise Config'te eklemiþ olduðumuz identity resource içerisindeki key adýný veriyoruz. Bu sayede mapleme iþlemini yapmýþ oluruz.
+                opts.ClaimActions.MapUniqueJsonKey("country", "country");
+                opts.ClaimActions.MapUniqueJsonKey("city", "city");
             });
 
             services.AddControllersWithViews();
